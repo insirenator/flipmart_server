@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { getUserByEmail, insertUser } from "../database/users.db";
+import { hashPassword } from "../utils/password.utils";
 
 export async function registerUserHandler(
   req: Request,
@@ -18,7 +19,10 @@ export async function registerUserHandler(
         .json({ success: false, message: "user is already registered" });
     }
 
-    const result = await insertUser({ name, email, password });
+    // Hash the password
+    const hashedPassword = await hashPassword(password);
+
+    const result = await insertUser({ name, email, password: hashedPassword });
 
     return res.status(201).json({
       success: true,
