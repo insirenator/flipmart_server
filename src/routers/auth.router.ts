@@ -1,9 +1,13 @@
+import { Router } from "express";
+
 import {
   loginUserHandler,
   registerUserHandler,
+  registerSellerHandler,
 } from "../controllers/auth/index";
-import { Router } from "express";
+
 import {
+  jwtTokenVerificationMiddleware,
   userFieldsValidationMiddleware,
   userLoginValidationMiddleware,
 } from "../middlewares/auth.middlewares";
@@ -16,6 +20,16 @@ authRouter.post(
   registerUserHandler
 );
 
-authRouter.post("/login", [userLoginValidationMiddleware], loginUserHandler);
+authRouter.post(
+  "/login",
+  [userLoginValidationMiddleware],
+  loginUserHandler
+);
+
+authRouter.post(
+  "/seller/register",
+  [jwtTokenVerificationMiddleware],
+  registerSellerHandler
+);
 
 export default authRouter;

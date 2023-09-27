@@ -3,6 +3,7 @@ import { userSchema } from "../schemas/user.schema";
 import { sanitizeZodValidationError } from "../utils/zod.error.utils";
 import { getUserByEmail } from "../database/users.db";
 import { comparePassword } from "../utils/password.utils";
+import { verifyAccessToken } from "../utils/jwt.utils";
 
 export async function userFieldsValidationMiddleware(
   req: Request,
@@ -13,7 +14,11 @@ export async function userFieldsValidationMiddleware(
     const { name, email, password } = req.body;
 
     // Validate the fields
-    const response = userSchema.safeParse({ name, email, password });
+    const response = userSchema.safeParse({
+      name,
+      email,
+      password,
+    });
 
     // If validation fails!
     if (!response.success) {
@@ -40,21 +45,55 @@ export async function userLoginValidationMiddleware(
     const user = await getUserByEmail(email);
 
     if (!user) {
-      return res
-        .status(401)
-        .json({ success: false, message: "user not registered" });
+      return res.status(401).json({
+        success: false,
+        message: "user not registered",
+      });
     }
 
     // Check if password is correct
     const passwordMatch = await comparePassword(password, user.password);
 
     if (!passwordMatch) {
-      return res
-        .status(401)
-        .json({ success: false, message: "incorrect password" });
+      return res.status(401).json({
+        success: false,
+        message: "incorrect password",
+      });
     }
     // If all good, attach the user data to locals and forward to next handler
     res.locals.user = user;
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function jwtTokenVerificationMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      throw {
+        status: 401,
+        msg: "no or invalid authentication header",
+      };
+    }
+
+    const token = authHeader.split(" ")[1];
+    const verification = verifyAccessToken(token);
+
+    if (!verification.success) {
+      throw {
+        status: 401,
+        msg: verification.message,
+      };
+    }
+
+    // If all good
+    res.locals.jwtPayload = verification.payload;
     next();
   } catch (error) {
     next(error);

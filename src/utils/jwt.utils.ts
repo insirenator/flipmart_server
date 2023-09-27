@@ -3,9 +3,10 @@ import { config } from "dotenv";
 config();
 
 type UserPayload = {
-  id: number;
+  id: string;
   name: string;
   email: string;
+  [key: string]: any;
 };
 
 export function generateAccessToken(payload: UserPayload, expireLimit = "10d") {
