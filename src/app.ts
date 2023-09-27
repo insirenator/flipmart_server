@@ -20,6 +20,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRouter);
 
 app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
+  console.log(err);
   return res
     .status(err.status || 500)
     .json({ success: false, error: err.msg || err });

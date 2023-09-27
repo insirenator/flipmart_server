@@ -12,24 +12,15 @@ export default async function loginUserHandler(
     const user = res.locals.user;
 
     // Generate access token
-    const accessToken = generateAccessToken({
-      id: user.id as number,
-      name: user.name as string,
-      email: user.email as string,
-    });
+    const accessToken = generateAccessToken(user);
 
-    // Construct a sanitized user
-    const sanitizedUser = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      accessToken,
-    };
+    // Attach the access token
+    user.accessToken = accessToken;
 
     return res.status(200).json({
       success: false,
       message: "user login successful",
-      user: sanitizedUser,
+      user,
     });
   } catch (error) {
     next(error);
