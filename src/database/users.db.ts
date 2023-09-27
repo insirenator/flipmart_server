@@ -15,7 +15,7 @@ export async function insertUser(user: User) {
 
 export async function getUserByEmail(email: string) {
   const result = await pool.query(
-    "SELECT id, name, email, password, role, enabled, createdat FROM users WHERE email = $1",
+    "SELECT id, name, email, password, role, verified, enabled, createdat FROM users WHERE email = $1",
     [email]
   );
 

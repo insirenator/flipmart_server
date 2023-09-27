@@ -4,6 +4,7 @@ import {
   loginUserHandler,
   registerUserHandler,
   registerSellerHandler,
+  verifyUserHandler,
 } from "../controllers/auth/index";
 
 import {
@@ -21,10 +22,12 @@ authRouter.post(
 );
 
 authRouter.post(
-  "/login",
-  [userLoginValidationMiddleware],
-  loginUserHandler
+  "/verify-user",
+  [jwtTokenVerificationMiddleware],
+  verifyUserHandler
 );
+
+authRouter.post("/login", [userLoginValidationMiddleware], loginUserHandler);
 
 authRouter.post(
   "/seller/register",

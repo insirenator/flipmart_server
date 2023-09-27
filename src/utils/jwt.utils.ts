@@ -2,14 +2,17 @@ import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 config();
 
-type UserPayload = {
-  id: string;
-  name: string;
-  email: string;
-  [key: string]: any;
-};
+// type UserPayload = {
+//   id: string;
+//   name: string;
+//   email: string;
+//   [key: string]: any;
+// };
 
-export function generateAccessToken(payload: UserPayload, expireLimit = "10d") {
+export function generateAccessToken(
+  payload: any,
+  expireLimit: string | number = "10d"
+) {
   const accessToken = jwt.sign(payload, process.env.JWT_SECRET as string, {
     expiresIn: expireLimit,
   });

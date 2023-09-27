@@ -2,6 +2,9 @@ import { NextFunction, Request, Response } from "express";
 
 import { getUserByEmail, insertUser } from "../../database/users.db";
 import { hashPassword } from "../../utils/password.utils";
+import { sendOTPMail } from "../../utils/mail.utils";
+import { generateAccessToken } from "../../utils/jwt.utils";
+import { generateOTP } from "../../utils/otp.utils";
 
 export default async function registerUserHandler(
   req: Request,
@@ -22,12 +25,22 @@ export default async function registerUserHandler(
     // Hash the password
     const hashedPassword = await hashPassword(password);
 
-    const result = await insertUser({ name, email, password: hashedPassword });
+    await insertUser({ name, email, password: hashedPassword });
+
+    const OTP = generateOTP(6);
+
+    const verificationToken = generateAccessToken({ otp: OTP }, "10m"); // 10 minutes
+
+    await sendOTPMail({
+      name: name as string,
+      email: email as string,
+      otp: OTP,
+    });
 
     return res.status(201).json({
       success: true,
       message: "user registered!",
-      user: result,
+      verificationToken,
     });
   } catch (error) {
     next(error);
