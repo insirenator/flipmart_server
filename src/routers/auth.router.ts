@@ -1,7 +1,7 @@
 import {
   loginUserHandler,
   registerUserHandler,
-} from "../controllers/auth.controller";
+} from "../controllers/auth/index";
 import { Router } from "express";
 import {
   userFieldsValidationMiddleware,
