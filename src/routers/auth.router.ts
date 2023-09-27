@@ -1,6 +1,12 @@
-import { registerUserHandler } from "../controllers/auth.controller";
+import {
+  loginUserHandler,
+  registerUserHandler,
+} from "../controllers/auth.controller";
 import { Router } from "express";
-import { userFieldsValidationMiddleware } from "../middlewares/auth.middlewares";
+import {
+  userFieldsValidationMiddleware,
+  userLoginValidationMiddleware,
+} from "../middlewares/auth.middlewares";
 
 const authRouter = Router();
 
@@ -9,5 +15,7 @@ authRouter.post(
   [userFieldsValidationMiddleware],
   registerUserHandler
 );
+
+authRouter.post("/login", [userLoginValidationMiddleware], loginUserHandler);
 
 export default authRouter;

@@ -15,5 +15,5 @@ export async function getUserByEmail(email: string) {
     email,
   ]);
 
-  return result.rows;
+  return result.rows[0];
 }
