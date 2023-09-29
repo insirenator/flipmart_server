@@ -1,0 +1,17 @@
+{
+  "dev": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "POSTgres@149",
+    "host": "localhost",
+    "database": "FlipMart"
+  },
+
+  "test": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "POSTgres@149",
+    "host": "localhost",
+    "database": "FlipMart_test"
+  }
+}
