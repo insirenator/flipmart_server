@@ -7,11 +7,3 @@ const pool = new Pool({
 });
 
 export default pool;
-
-// {
-//   host: "localhost",
-//   user: "postgres",
-//   database: "FlipMart",
-//   password: "POSTgres@149",
-//   port: 5432,
-// }
