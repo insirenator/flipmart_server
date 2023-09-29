@@ -6,7 +6,7 @@ import pool from "./db";
 export async function insertUser(user: User) {
   const uid = nanoid(); // Generate unique ID
   const result = await pool.query(
-    "INSERT INTO users(id, name, email, password) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role, createdat",
+    "INSERT INTO users(id, name, email, password) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role, created_at",
     [uid, user.name, user.email, user.password]
   );
 
@@ -15,7 +15,7 @@ export async function insertUser(user: User) {
 
 export async function getUserByEmail(email: string) {
   const result = await pool.query(
-    "SELECT id, name, email, password, role, verified, enabled, createdat FROM users WHERE email = $1",
+    "SELECT id, name, email, password, role, verified, enabled, created_at FROM users WHERE email = $1",
     [email]
   );
 
