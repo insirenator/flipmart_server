@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { getUserByEmail, insertUser } from "../../database/users.db";
-import { hashPassword } from "../../utils/password.utils";
+import { hashString } from "../../utils/hashing.utils";
 import { sendOTPMail } from "../../utils/mail.utils";
 import { generateAccessToken } from "../../utils/jwt.utils";
 import { generateOTP } from "../../utils/otp.utils";
@@ -23,14 +23,26 @@ export default async function registerUserHandler(
     }
 
     // Hash the password
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = await hashString(password);
 
-    await insertUser({ name, email, password: hashedPassword });
+    // Insert User
+    const createdUser = await insertUser({
+      name,
+      email,
+      password: hashedPassword,
+    });
 
+    // Generate and Hash OTP
     const OTP = generateOTP(6);
+    const hashedOTP = await hashString(OTP);
 
-    const verificationToken = generateAccessToken({ otp: OTP }, "10m"); // 10 minutes
+    // Create Access Token with OTP in it
+    const verificationToken = generateAccessToken(
+      { ...createdUser, hashedOtp: hashedOTP },
+      "10m"
+    ); // 10 minutes
 
+    // Mail the OTP
     await sendOTPMail({
       name: name as string,
       email: email as string,

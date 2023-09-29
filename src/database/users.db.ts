@@ -10,7 +10,7 @@ export async function insertUser(user: User) {
     [uid, user.name, user.email, user.password]
   );
 
-  return result.rows;
+  return result.rows[0];
 }
 
 export async function getUserByEmail(email: string) {
@@ -20,4 +20,8 @@ export async function getUserByEmail(email: string) {
   );
 
   return result.rows[0];
+}
+
+export async function updateUserVerificationStatus(id: string) {
+  await pool.query("UPDATE users SET verified = true WHERE id = ($1)", [id]);
 }

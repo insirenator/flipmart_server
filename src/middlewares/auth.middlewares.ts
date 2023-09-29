@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { userSchema } from "../schemas/user.schema";
 import { sanitizeZodValidationError } from "../utils/zod.error.utils";
 import { getUserByEmail } from "../database/users.db";
-import { comparePassword } from "../utils/password.utils";
+import { comparePassword } from "../utils/hashing.utils";
 import { verifyAccessToken } from "../utils/jwt.utils";
 
 export async function userFieldsValidationMiddleware(
