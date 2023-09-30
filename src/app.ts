@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import authRouter from "./routers/auth.router";
+import productsRouter from "./routers/products.router";
 
 interface CustomError extends Error {
   status: number;
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/products", productsRouter);
 
 app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
   console.log(err);

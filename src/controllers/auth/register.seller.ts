@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { updateUserRoleToSeller } from "../../database/users.db";
 
 export default async function registerSellerHandler(
   req: Request,
@@ -15,6 +16,8 @@ export default async function registerSellerHandler(
         msg: "id mismatch: body id and token id do not match",
       };
     }
+
+    await updateUserRoleToSeller(id);
 
     return res.status(201).json({
       success: true,
