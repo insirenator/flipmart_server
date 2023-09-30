@@ -18,7 +18,7 @@ export default async function loginUserHandler(
     user.accessToken = accessToken;
 
     return res.status(200).json({
-      success: false,
+      success: true,
       message: "user login successful",
       user,
     });

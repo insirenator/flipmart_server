@@ -3,8 +3,6 @@ import Mailgen from "mailgen";
 import { config } from "dotenv";
 config();
 
-import { generateAccessToken } from "./jwt.utils";
-
 const configuration = {
   service: "gmail",
   auth: {

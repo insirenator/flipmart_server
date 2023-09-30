@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { userSchema } from "../schemas/user.schema";
 import { sanitizeZodValidationError } from "../utils/zod.error.utils";
 import { getUserByEmail } from "../database/users.db";
-import { comparePassword } from "../utils/hashing.utils";
+import { compareHash } from "../utils/hashing.utils";
 import { verifyAccessToken } from "../utils/jwt.utils";
 
 export async function userFieldsValidationMiddleware(
@@ -11,13 +11,14 @@ export async function userFieldsValidationMiddleware(
   next: NextFunction
 ) {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, address } = req.body;
 
     // Validate the fields
     const response = userSchema.safeParse({
       name,
       email,
       password,
+      address,
     });
 
     // If validation fails!
@@ -42,17 +43,20 @@ export async function userLoginValidationMiddleware(
     const { email, password } = req.body;
 
     // Check if user exists
-    const user = await getUserByEmail(email);
+    const fetchedUser = await getUserByEmail(email);
 
-    if (!user) {
+    if (!fetchedUser) {
       return res.status(401).json({
         success: false,
         message: "user not registered",
       });
     }
 
+    // Object Destructuring Trick
+    const { password: hashedPassword, ...userInfo } = fetchedUser;
+
     // Check if password is correct
-    const passwordMatch = await comparePassword(password, user.password);
+    const passwordMatch = await compareHash(password, hashedPassword);
 
     if (!passwordMatch) {
       return res.status(401).json({
@@ -61,7 +65,7 @@ export async function userLoginValidationMiddleware(
       });
     }
     // If all good, attach the user data to locals and forward to next handler
-    res.locals.user = user;
+    res.locals.user = userInfo;
     next();
   } catch (error) {
     next(error);

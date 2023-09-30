@@ -7,6 +7,13 @@ export const userSchema = z.object({
   password: z
     .string()
     .regex(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/),
+  address: z.object({
+    street: z.string(),
+    city: z.string(),
+    state: z.string(),
+    country: z.string(),
+    pincode: z.string(),
+  }),
 });
 
 // Type for static typing

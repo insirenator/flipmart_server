@@ -12,7 +12,7 @@ export default async function registerUserHandler(
   next: NextFunction
 ) {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, address } = req.body;
 
     const user = await getUserByEmail(email);
 
@@ -30,6 +30,7 @@ export default async function registerUserHandler(
       name,
       email,
       password: hashedPassword,
+      address,
     });
 
     // Generate and Hash OTP
