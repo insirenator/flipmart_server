@@ -1,14 +1,26 @@
 import { Router } from "express";
-import { productsFieldsValidationMiddleware } from "../middlewares/products.middlewares";
-import addProductsHandler from "../controllers/products/add.products";
+import {
+  productMappingFieldsValidationMiddleware,
+  productsFieldsValidationMiddleware,
+} from "../middlewares/products.middlewares";
+import addNewProductsHandler from "../controllers/products/add.new.products";
 import { jwtTokenVerificationMiddleware } from "../middlewares/auth.middlewares";
+import addExistingProductHandler from "../controllers/products/add.products";
 
 const productsRouter = Router();
 
+// Route to add existing product in seller inventory
 productsRouter.post(
   "/",
+  [jwtTokenVerificationMiddleware, productMappingFieldsValidationMiddleware],
+  addExistingProductHandler
+);
+
+// Route to add new product
+productsRouter.post(
+  "/new",
   [jwtTokenVerificationMiddleware, productsFieldsValidationMiddleware],
-  addProductsHandler
+  addNewProductsHandler
 );
 
 export default productsRouter;

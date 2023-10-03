@@ -1,12 +1,11 @@
-/*
-  This handler is responsible for creating a mapping in products_seller_mapping
-  of an existing product and a seller
-*/
-
 import { NextFunction, Request, Response } from "express";
-import { createProductSellerMappings } from "../../database/products.db";
+import { insertProductsInBulk } from "../../database/products.db";
 
-export default async function addExistingProductHandler(
+/* 
+  NOTE: This handler processes an array of the products. So if you
+    have to pass just one product, wrap it in the array too.
+*/
+export default async function addNewProductsHandler(
   req: Request,
   res: Response,
   next: NextFunction
@@ -22,7 +21,7 @@ export default async function addExistingProductHandler(
       };
     }
 
-    await createProductSellerMappings(seller_id, products);
+    await insertProductsInBulk(products);
 
     res.status(201).json({
       success: true,
